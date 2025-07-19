@@ -8,6 +8,7 @@ import {
   Dimensions,
   Alert,
   Vibration,
+  Image,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -256,7 +257,19 @@ export default function App() {
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>🐍 Você tem 1 real?</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <Text style={styles.title}>🐍 Você tem 1 real?</Text>
+          {gameStarted && (
+            <TouchableOpacity
+              style={[styles.pauseButton, gamePaused && styles.pauseButtonActive, { marginLeft: 10 }]}
+              onPress={togglePause}
+            >
+              <Text style={styles.pauseButtonText}>
+                {gamePaused ? '▶️' : '⏸️'}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
         <View style={styles.scoreContainer}>
           <Text style={styles.scoreText}>Pontuação: {score}</Text>
           <Text style={styles.scoreText}>Recorde: {highScore}</Text>
@@ -278,75 +291,58 @@ export default function App() {
 
       {/* Joystick Virtual */}
       {gameStarted && (
-        <View style={styles.controlsContainer}>
-          <View style={styles.joystickContainer}>
-            {/* Botão Cima */}
-            <TouchableOpacity 
-              style={[styles.directionButton, styles.upButton]}
-              onPress={() => {
-                if (direction !== 'DOWN' && !gamePaused) {
-                  setDirection('UP');
-                  setLastGesture('⬆️ Cima');
-                  Vibration.vibrate(50);
-                }
-              }}
-            >
-              <Text style={styles.directionText}>⬆️</Text>
-            </TouchableOpacity>
-            
-            {/* Botões Laterais */}
-            <View style={styles.horizontalButtons}>
-              <TouchableOpacity 
-                style={[styles.directionButton, styles.leftButton]}
-                onPress={() => {
-                  if (direction !== 'RIGHT' && !gamePaused) {
-                    setDirection('LEFT');
-                    setLastGesture('⬅️ Esquerda');
-                    Vibration.vibrate(50);
-                  }
-                }}
-              >
-                <Text style={styles.directionText}>⬅️</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.directionButton, styles.rightButton]}
-                onPress={() => {
-                  if (direction !== 'LEFT' && !gamePaused) {
-                    setDirection('RIGHT');
-                    setLastGesture('➡️ Direita');
-                    Vibration.vibrate(50);
-                  }
-                }}
-              >
-                <Text style={styles.directionText}>➡️</Text>
-              </TouchableOpacity>
-            </View>
-            
-            {/* Botão Baixo */}
-            <TouchableOpacity 
-              style={[styles.directionButton, styles.downButton]}
-              onPress={() => {
-                if (direction !== 'UP' && !gamePaused) {
-                  setDirection('DOWN');
-                  setLastGesture('⬇️ Baixo');
-                  Vibration.vibrate(50);
-                }
-              }}
-            >
-              <Text style={styles.directionText}>⬇️</Text>
-            </TouchableOpacity>
-          </View>
-          
-          {/* Botão Pausa */}
-          <TouchableOpacity 
-            style={[styles.pauseButton, gamePaused && styles.pauseButtonActive]}
-            onPress={togglePause}
-          >
-            <Text style={styles.pauseButtonText}>
-              {gamePaused ? '▶️' : '⏸️'}
-            </Text>
-          </TouchableOpacity>
+        <View style={styles.dpadContainer}>
+          {/* D-Pad visual */}
+          <Image
+            source={require('./assets/dpad.png')}
+            style={styles.dpadImage}
+            resizeMode="contain"
+          />
+          {/* Áreas de toque sobrepostas */}
+          {/* Cima */}
+          <TouchableOpacity
+            style={[styles.dpadTouch, styles.dpadUp]}
+            onPress={() => {
+              if (direction !== 'DOWN' && !gamePaused) {
+                setDirection('UP');
+                setLastGesture('⬆️ Cima');
+                Vibration.vibrate(50);
+              }
+            }}
+          />
+          {/* Baixo */}
+          <TouchableOpacity
+            style={[styles.dpadTouch, styles.dpadDown]}
+            onPress={() => {
+              if (direction !== 'UP' && !gamePaused) {
+                setDirection('DOWN');
+                setLastGesture('⬇️ Baixo');
+                Vibration.vibrate(50);
+              }
+            }}
+          />
+          {/* Esquerda */}
+          <TouchableOpacity
+            style={[styles.dpadTouch, styles.dpadLeft]}
+            onPress={() => {
+              if (direction !== 'RIGHT' && !gamePaused) {
+                setDirection('LEFT');
+                setLastGesture('⬅️ Esquerda');
+                Vibration.vibrate(50);
+              }
+            }}
+          />
+          {/* Direita */}
+          <TouchableOpacity
+            style={[styles.dpadTouch, styles.dpadRight]}
+            onPress={() => {
+              if (direction !== 'LEFT' && !gamePaused) {
+                setDirection('RIGHT');
+                setLastGesture('➡️ Direita');
+                Vibration.vibrate(50);
+              }
+            }}
+          />
         </View>
       )}
 
@@ -464,50 +460,39 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
-  joystickContainer: {
+  dpadContainer: {
+    width: 128,
+    height: 128,
     alignSelf: 'center',
-    width: 120,
-    height: 120,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 20,
+    position: 'relative',
   },
-  directionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'white',
+  dpadImage: {
+    width: 128,
+    height: 128,
   },
-  upButton: {
+  dpadTouch: {
+    position: 'absolute',
+    width: 64,
+    height: 64,
+    backgroundColor: 'transparent',
+    zIndex: 2,
+  },
+  dpadUp: {
+    left: 32,
     top: 0,
-    backgroundColor: '#FF5722',
   },
-  horizontalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 10,
-  },
-  leftButton: {
-    left: 0,
-    backgroundColor: '#FF9800',
-  },
-  rightButton: {
-    right: 0,
-    backgroundColor: '#4CAF50',
-  },
-  downButton: {
+  dpadDown: {
+    left: 32,
     bottom: 0,
-    backgroundColor: '#2E7D32',
   },
-  directionText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
+  dpadLeft: {
+    left: 0,
+    top: 32,
+  },
+  dpadRight: {
+    right: 0,
+    top: 32,
   },
   pauseText: {
     color: 'white',

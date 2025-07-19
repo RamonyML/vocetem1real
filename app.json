@@ -6,23 +6,16 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#4CAF50"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.voce1real.app",
-      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4CAF50"
       },
-      "edgeToEdgeEnabled": false,
       "package": "com.company.vctem1real",
       "versionCode": 1,
       "permissions": [
@@ -33,14 +26,10 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-ads-admob",
-        {
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713"
-        }
-      ],
-      "@react-native-firebase/app"
-    ]
+    "extra": {
+      "eas": {
+        "projectId": "accf8e26-bc28-4c2c-b294-514d12f3839f"
+      }
+    }
   }
 }
