@@ -23,7 +23,7 @@
         "backgroundColor": "#4CAF50"
       },
       "edgeToEdgeEnabled": false,
-      "package": "com.voce1real.app",
+      "package": "com.company.vctem1real",
       "versionCode": 1,
       "permissions": [
         "INTERNET",
@@ -39,7 +39,8 @@
         {
           "androidAppId": "ca-app-pub-3940256099942544~3347511713"
         }
-      ]
+      ],
+      "@react-native-firebase/app"
     ]
   }
 }
